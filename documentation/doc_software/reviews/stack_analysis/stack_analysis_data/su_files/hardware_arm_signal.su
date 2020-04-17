@@ -1,0 +1,3 @@
+hardware_arm_signal.c:71:6:Hw_Sig_Beep_Handler	0	static
+hardware_arm_signal.c:117:6:Hw_Sig_Handler	12	static
+hardware_arm_signal.c:195:6:Hw_Sig_Send_Msg	12	static

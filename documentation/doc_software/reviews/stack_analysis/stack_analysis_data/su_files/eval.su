@@ -1,0 +1,11 @@
+eval.c:597:25:Eval_KingRook_King	16	static
+eval.c:628:25:Eval_KingQueen_King	16	static
+eval.c:651:25:Eval_KingKnightBishop_King	16	static
+eval.c:1038:26:Eval_Pawn_Evaluation	232	static
+eval.c:1859:25:Eval_Middlegame_Evaluation	80	static
+eval.c:2360:26:Eval_Endgame_Evaluation	104	static
+eval.c:3900:5:Eval_Is_Light_Square	0	static
+eval.c:3905:6:Eval_Init_Pawns	12	static
+eval.c:3997:27:Eval_Static_Evaluation	136	static
+eval.c:4450:5:Eval_Setup_Initial_Material	48	static
+eval.c:4520:6:Eval_Zero_Initial_Material	0	static

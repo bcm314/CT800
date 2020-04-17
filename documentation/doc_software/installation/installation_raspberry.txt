@@ -1,0 +1,26 @@
+******************************************************************************
+This file contains the instructions how to install the executable under
+Linux. Note that there is no GUI included because the engine is intended to
+be used with chess GUIs via the UCI protocol.
+******************************************************************************
+
+- Go to the program directory of your chess GUI and create a "CT800"
+  directory.
+- Copy the Raspi executables and the logo PNGs from the binaries/Rasberry-Pi
+  directory in the ZIP download file to that "CT800" directory.
+- Alternatively, you can follow the build instructions of
+  documentation/doc_software/buildprocess/buildprocess_uci.txt for
+  generating the executable from the sources.
+- Follow the instructions of your chess GUI how to register the engine with
+  your chess GUI.
+- The CT800 engine supports the UCI protocol only. You should select "use
+  engine book" because the opening book is tuned to the engine's style.
+
+Note: The opening book is contained in the executable file, as well as the
+      endgame bitbase for KPK, so there are no additional paths to configure.
+
+Note: The engine uses 8 MB as default size for the hash tables. For better
+      performance, 256 MB are recommended, which you can control through your
+      GUI.
+
+******************************************************************************

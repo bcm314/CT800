@@ -1,0 +1,78 @@
+******************************************************************************
+
+This file contains the instructions how to do a build for the actual CT800
+hardware device. This does not run on any other system like Windows, Linux
+or Android.
+
+******************************************************************************
+
+The resulting firmware files after a successful ARM build will be
+"source/ct800fw_crc.bin" and "source/ct800fw_crc.hex". The last output
+lines of the build shell script resp. batch file should read:
+
+*******************
+OK: ct800fw_crc.bin
+OK: ct800fw_crc.hex
+done.
+*******************
+
+Both output files contain the same data in binary and hex file format,
+respectively. You can choose either of them, depending on which format
+your chip programming software can handle.
+
+If possible, prefer the hex file because it already contains the correct
+flash-ROM start address. In case your chip programming software can only
+handle the binary file, you may need to configure the flash-ROM address
+where the binary data are supposed to start, it has to be 0x08000000.
+
+******************************************************************************
+
+For Windows:
+In the "source" directory, run "make_ct800fw.bat". If you have
+GCC-ARM-NONE-EABI in your PATH, "make_ct800fw.sh" will find it automatically.
+Otherwise, edit the path name in line 5 to where you have it installed on
+your system. That is one line to edit.
+
+The script will generate the opening book data, compile/link the ARM
+application (GCC-ARM-NONE-EABI required) and append a CRC32.
+
+There is also make_ct800fw_asm.bat that will generate the assembly listing
+"ct800.lst" in CT800\Debug\obj .
+
+Alternatively, you can use "CT800.coproj", but that requires CoIDE to be
+installed.
+
+
+For Linux:
+In the "source" directory, run "make_ct800fw.sh". Maybe you have to set
+the file permissions to make it executable. Either use some GUI explorer
+or the terminal, in which case you change to the source/ directory and
+enter the following line:
+chmod +x ./make_ct800fw.sh
+
+If you have GCC-ARM-NONE-EABI in your PATH, "make_ct800fw.sh" will find it
+automatically. Otherwise, edit the path name in line 4 to where you have it
+installed on your system. That is one line to edit.
+
+The script will generate the CRC tool and the book tool if they are not yet
+there (GCC for the host system required), generate the opening book data,
+compile/link the ARM application (GCC-ARM-NONE-EABI required) and append a
+CRC32.
+
+There is also make_ct800fw_asm.sh that will generate the assembly listing
+"ct800.lst" in CT800\Debug\obj .
+
+******************************************************************************
+
+NOTE: The "official" build is always done using the shell script resp. the
+batch file. This guarantees that a certain SW version will always have the
+same CRC32. If the IDE shuffles files around, the linker may link them in a
+different order, which would lead to a functionally identical binary, but
+with a different CRC32.
+
+NOTE 2: If you want to generate a debug build, enable the define HW_CT_DEBUG
+in hardware_arm.c or pass the define via the compiler command line using
+-DHW_CT_DEBUG. This will switch off the watchdog so that stopping the system
+in the debugger will not reset it.
+
+******************************************************************************

@@ -1,0 +1,4 @@
+******************************************************************************
+For instructions how to install the executable in the embedded target
+platform on an STM32 microcontroller, see chapter 6 of the user manual.
+******************************************************************************

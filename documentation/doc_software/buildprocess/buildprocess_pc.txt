@@ -1,0 +1,79 @@
+******************************************************************************
+
+This file contains the instructions how to do a debug build that has the
+same kind of menu system as the actual CT800 hardware device. This build
+does not have a UCI interface and is only intended for easier testing during
+development.
+
+It cannot be used with popular chess GUIs like Arena. For getting a UCI
+compatible build targeted at Windows, Linux or Android, see the instructions
+in buildprocess_uci.txt.
+******************************************************************************
+
+Under Windows, this build is using Cygwin/GCC-x86. If you don't have
+Cygwin, install it.
+
+NOTE: Just for building the firmware, Cygwin is not required. You can also
+modify the opening book without Cygwin since the opening book compiler is
+supplied as Windows EXE (compiled with MingW GCC 6.3.0). But if you want to
+test and debug, that's much easier on a PC.
+
+For Linux, GCC-x86 should already be installed anyway. Remember that you may
+have to change the file perimissions of the shell scripts to make them
+executable.
+
+******************************************************************************
+
+The opening book has to be converted to the include file format.
+in "tools/booktool", generate the executable book tool:
+Windows: run "make_booktool.bat" (MingW required, or use the supplied
+executable booktool_win.exe).
+Linux: ./make_booktool.sh (GCC-x86 for the host system required).
+
+Edit the opening book file "bookdata.txt" as you like.
+
+Run the book tool which converts the line-based opening format into a
+position-based binary format so that transpositions will be recognised:
+Windows: run "booktool_win.bat"
+Linux: ./run_booktool.sh
+
+(fix possible erroneous lines in bookdata.txt, or the converted
+opening book file will NOT be generated!)
+
+This will generate bookdata.c, the include file. No further tools are needed.
+
+******************************************************************************
+
+The king-pawn-king endgame table is generated in a similar way. Since this
+file will not change and it is already in the sources directory, there is no
+need to build it.
+
+Windows: run "make_pfpk.bat" (MingW required, or use the supplied
+executable pfpk_win.exe).
+Linux: run the tool in "tools/kpk" (just type "make").
+
+That will output "kpk.dat" which is the generated binary table file.
+kpk_table.c is the include file, which is what you need. Possible endianess
+issues are taken care of in that the binary values are saved byte-wise.
+
+******************************************************************************
+
+When you've got all the include files together, put bookdata.c into the
+application folder (kpk_table.c is already there) and run the make shell
+script:
+./make_pc.sh
+
+******************************************************************************
+
+NOTE: the build scripts use the GCC flag -m32, which enforces a 32 bit
+build in order to be as close to the target platform as possible.
+
+Using the Cygwin/Windows environment, this is fine because Windows-x64 can
+always execute 32 bit programs.
+
+But under Linux-64, you may need multiarch support, which means installing
+the 32 bit libraries, too. Use your favourite internet search engine for
+the keywords 'linux', '(your-distro)', 'multiarch', '32bit', '64bit'. It
+shouldn't take more than two or three commands.
+
+******************************************************************************

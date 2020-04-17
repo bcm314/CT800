@@ -1,0 +1,8 @@
+hardware_arm_keybd.c:453:26:Hw_Keybd_Backlight_Handler	8	static
+hardware_arm_keybd.c:217:21:Hw_Keybd_Get_Input.constprop	0	static
+hardware_arm_keybd.c:493:26:Hw_Keybd_Matrix_Handler	32	static
+hardware_arm_keybd.c:262:14:Hw_Keybd_Check_Keys	16	static
+hardware_arm_keybd.c:301:14:Hw_Keybd_Get_Enkey	0	static
+hardware_arm_keybd.c:364:12:Hw_Keybd_QU_Read	8	static
+hardware_arm_keybd.c:584:6:Hw_Keybd_Handler	8	static
+hardware_arm_keybd.c:595:6:Hw_Keybd_Set_Mode	8	static

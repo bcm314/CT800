@@ -1,0 +1,205 @@
+******************************************************************************
+                       Worst Case Stack Usage Analysis
+******************************************************************************
+Since recursion is always dangerous with regard to possible stack overflow,
+which implies a system crash, here comes a worst case analysis to show that
+there is no risk of stack overflow.
+
+This analysis was done with the FW V1.40 2020-Apr-05. It applies to the ARM
+target, not to the PC development version, though the stack usage is similar.
+
+The following relevant ctdefs.h defines were used:
+#define MAXMV             200
+#define MAXCAPTMV         64
+#define CHECKLISTLEN      64
+#define MAX_DEPTH         23
+#define MAX_QIESC_DEPTH   10
+
+The following stack size definition in boot_stm32f405.c was used:
+#define STACK_SIZE        0x00002100UL
+This refers the stack size in uint32_t, so this gives 33 kB of stack.
+
+Since these defines control the stack usage in the recursive part of the
+application, the stack analysis will also be valid for future versions of the
+software - provided that these defines stay the same. In case they are
+changed, this stack usage analysis has to be performed again. This holds also
+for any other change in the recursive parts (NegaScout and Quiescence).
+
+GCC offers the compiler switch -fstack-usage. Add this to the compiler calls
+in the generation shell script resp. batch file (make_ct800fw). The stack
+usage files (.su) will be in 'source/CT800/obj/', one for each object file.
+They state the stack usage on a per function basis. The resulting .su files
+used are documented in stack_analysis_data/, along with the associated build
+scripts.
+
+Note: build scripts for the stack usage analysis cannot use -flto because
+this seems to break the -fstack-usage feature.
+
+Automated tools are not suited to extract the relevant data because they
+cannot cope with recursion and function pointers, so this has to be done
+manually.
+
+The linker script automatically ensures that the reserved stack and the other
+variables actually fit in the available RAM - otherwise, the build will fail.
+
+Evaluating the call chains in the generated .su files gives the following
+results:
+
+******************************************************************************
+                                  Interrupts
+******************************************************************************
+Additional cost per function call: 4 bytes for the return address plus r12.
+This does not apply for Hw_SysTick_Handler() and Hw_Fault_Exception_Handler()
+themselves; here the exception stack is relevant.
+
+hardware_arm.c:Hw_SysTick_Handler               16  static
+hardware_arm_keybd.c:Hw_Keybd_Handler            8  static
+hardware_arm_keybd.c:Hw_Keybd_Matrix_Handler    32  static
+timekeeping.c:Time_Enforce_Comp_Move             0  static
+
+
+=> maximum path: 16 + 8 + 32 + 4*8(function call overhead) = 88
+=> add 8 registers for the exception stack: + 8*4 = + 32
+=> total usage: 120 bytes
+
+hardware_arm.c:Hw_Fault_Exception_Handler        0  static
+hardware_arm.c:Hw_Fault_Exception_Processing    32  static
+hardware_arm_disp.c:Hw_Disp_Output              24  static
+hardware_arm_disp.c:Hw_Disp_Write_Cmd           16  static
+hardware_arm_disp.c:Hw_Disp_Write_Byte           8  static
+hardware_arm.c:Hw_Wait_Micsecs                   0  static
+
+=> maximum path 32 + 24 + 16 + 8 + 5*8(function call overhead) = 120
+=> add 8 registers for the exception stack: + 8*4 = + 32
+=> total usage: 152 bytes
+
+=> all exceptions combined: 272 bytes for the interrupt stack usage.
+
+******************************************************************************
+                                  Application
+******************************************************************************
+Only the worst case path is evaluated, for the chess-related parts:
+    main, Play_Handling, Play_Handling_White/Black, Search_Get_Best_Move,
+    Search_Negascout*21, Search_Quiescence*8, Eval_Static_Evaluation,
+    Eval_Pawn_Evaluation.
+
+play.c:main                        32    static
+play.c:Play_Handling               16    static
+play.c:Play_Handling_White        896    static
+search.c:Search_Get_Best_Move    1008    static
+search.c:Search_Negascout        1032    static
+search.c:Search_Quiescence        384    static
+eval.c:Eval_Static_Evaluation     136    static
+eval.c:Eval_Pawn_Evaluation       232    static
+
+32 + 16 + 896 + 1008 + 1032*23 + 384*10 + 104 + 232 = 29864
+
+call levels:
+1 + 1 + 1 + 1 + 23 + 10 + 1 + 1 = 39
+
+There are 16 CPU registers.
+- r0-r3 are used for passing parameters and results around, so they are not
+  pushed to the stack.
+- r4-r11 are callee-save registers, i.e. the procedure being called must take
+  care of them. In case they are pushed to the stack in the function prologue,
+  this is already accounted for in the stack usage of the function.
+- r12 (IP) is saved depending on the compiler model; to be safe, let's assume
+  that is is being saved by the caller.
+- r13 is the stack pointer, and it doesn't make sense to push it to the stack.
+- r14 (LR) must be saved by the caller (execution address after return from
+  the call).
+- r15 (PC) is not saved; instead, after a call, the previous content of LR is
+  popped into PC.
+
+=> That means we have the return address as unaccounted calling cost and r12.
+That gives 8 bytes: 8 bytes * 39 call levels = 312 bytes additional cost.
+
+=> total intermediate application stack usage: 30176 bytes.
+
+Given that 33 kB are available, this leaves quite some headroom, but see also
+the analysis for indirect function calls, which will increase the actual stack
+usage a bit.
+
+Actually, the real usage will not even be close to that much. The only kind
+of position where it is even possible to reach depth 23 in the Negascout is
+with king and pawn versus king, but that will have maximum 2 levels of
+Quiescence: promoting to queen and capturing the queen in the following ply.
+Any position with enough material that 10 levels of Quiescence could happen
+will not get that deep in the Negascout in any reasonable amount of time. But
+still, this is a worst case analysis.
+
+Note: the mate finder mode is ignored here because
+a) its maximum depth is only 16 plies (8 moves) while Search_Negascout() has
+   23.
+b) Search_Negamate() takes 984 bytes per recursion while Search_Negascout()
+   takes 1032.
+c) it does not use the Search_Quiescence() recursion chain.
+d) it does not use Eval_Static_Evaluation(), only Mvgen_White_King_In_Check()
+   and Mvgen_Black_King_In_Check, which take 36 bytes stack maximum.
+
+
+******************************************************************************
+                               Function pointers
+******************************************************************************
+Indirect calls via function pointers are a common pitfall even for toolchains
+that can report stack usage including children calls. In hardware_arm.c,
+Hw_Getch() uses this idiom for a callback function into the HMI layer.
+
+This is necessary because the battery "SHUTDOWN" warning has to work at all
+times, even when the menu is active or when the dialogue box for the battery
+"LOW" warning is open, but the user has not confirmed it.
+
+The worst case is that the search.c, Search_Quiescence() calls time_keeping.c,
+Time_Check(), which calls hmi.c, Hmi_Battery_Info(). If the battery level has
+gone from OK to LOW (but not yet to SHUTDOWN), a dialogue box will open via
+Hmi_Conf_Dialogue() and then Hmi_No_Restore_Dialogue(). This will call
+Hw_Getch() for getting user feedback.
+
+If the user lets the system just stay, the battery level will drain further,
+and Hw_Getch() will keep using the callback function into the HMI layer to
+detect the battery SHUTDOWN, which maps to Hmi_Battery_Shutdown(). This may
+attempt to reduce the CPU clock, but the following dialogue box has a deeper
+call chain:
+
+The possible chain here is, starting from Search_Quiescence():
+
+timekeeping.c:Time_Check                 24  static
+hmi.c:Hmi_Battery_Info                   32  static
+hmi.c:Hmi_Conf_Dialogue                  32  static
+hmi.c:Hmi_No_Restore_Dialogue           128  static
+hardware_arm.c:Hw_Getch                  16  static (without callback)
+hmi.c:Hmi_Battery_Shutdown               24  static (the callback)
+hmi.c:Hmi_Conf_Dialogue                  32  static
+hmi.c:Hmi_No_Restore_Dialogue           128  static
+hardware_arm_disp.c:Hw_Disp_Show_All     96  static
+hardware_arm_disp.c:Hw_Disp_Output       24  static
+hardware_arm_disp.c:Hw_Disp_Write_Cmd    16  static
+hardware_arm_disp.c:Hw_Disp_Write_Byte    8  static
+hardware_arm.c:Hw_Wait_Micsecs            0  static
+
+call levels: 13 => additional usage is 104 bytes.
+
+Total stack usage of this indirect function pointer chain: 664 bytes.
+
+However, this whole chain can only be triggered from Search_Quiescence(), but
+that is not yet the deepest call level. The static eval, which is also called
+from Search_Quiescence(), costs 384 bytes of stack (including 2 call levels),
+but that is less than this path.
+
+Therefore, the actual application stack usage is:
+30176 - 384 + 664 = 30456 bytes.
+
+******************************************************************************
+                              Stack Usage Result
+******************************************************************************
+Interrupts:       272 bytes ( 0.3 kB)
+Application:    30456 bytes (29.7 kB)
+Total:          30728 bytes (30.0 kB)
+Available:      33792 bytes (33.0 kB)
+Free:            3064 bytes ( 3.0 kB)
+
+******************************************************************************
+
+Evaluation: PASSED.
+
+******************************************************************************

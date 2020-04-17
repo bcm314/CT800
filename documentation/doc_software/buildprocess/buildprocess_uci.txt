@@ -1,0 +1,96 @@
+******************************************************************************
+
+This file contains the instructions how to do a build for a UCI compatible
+binary. Note that there is no GUI included because the engine is intended
+to be used with chess GUIs like Arena.
+
+Supported target platforms are Windows, Linux and Android (4.1 or higher for
+32 bit, 5.0 or higher for 64 bit).
+
+Note: if any warnings appear during compilation, the build will fail. You
+can modify the batch files resp. shell scripts and remove "-Werror" as
+workaround, but please also tell me, the author, about the problem so that
+I can fix it: info@ct800.net
+
+******************************************************************************
+
+Under Windows, this project is using MingW/GCC-x86 6.4.0.
+64 bit: x86_64-6.4.0-posix-seh-rt_v5-rev0
+32 bit: i686-6.4.0-posix-dwarf-rt_v5-rev0
+The installation paths must match those in make_ct800_win.bat .
+
+For Linux, GCC-x86 should already be installed anyway, and the pthreads
+library is also necessary. Remember that you may have to use chmod to change
+the file permissions of the build shell scripts to make them executable.
+
+For Android, you need to install the Android NDK r20 (not the SDK) by
+extracting the download archive into a convenient path. You can change the
+installation directory to whatever you like, just keep that in line with the
+paths in make_ct800_android.bat . Under Linux, the paths in
+make_ct800_android.sh have to be adopted.
+
+For Raspberry Pi, you either need GCC on the Raspi or the "Windows Toolchain
+for Raspberry Pi" (see http://gnutoolchains.com/raspberry/ ).
+If you are running Linux on your PC anyway, you will be familiar with how to
+run GCC on the Raspi and will not need a cross compiler.
+
+For macOS, Clang and the pthreads library are necessary. Remember that you may
+have to use chmod to change the file permissions of the build shell scripts to
+make them executable.
+
+******************************************************************************
+
+The opening book has to be converted to the include file format.
+in "tools/booktool", generate the executable book tool:
+Windows: run "make_booktool.bat" (MingW required, or use the supplied
+executable booktool_win.exe).
+Linux: ./make_booktool.sh (GCC-x86 for the host system required).
+
+Edit the opening book file "bookdata.txt" as you like.
+
+Run the book tool which converts the line-based opening format into a
+position-based binary format so that transpositions will be recognised:
+Windows: run "booktool_win.bat"
+Linux: ./run_booktool.sh
+
+(fix possible erroneous lines in bookdata.txt, or the converted
+opening book file will NOT be generated!)
+
+This will generate bookdata.c, the include file. No further tools are needed.
+
+Note: the opening book is compiled into the binary instead of staying a
+separate file that would be loaded at runtime, and that's because the target
+on the Cortex-M4 does not have a file system. The opening book code for the
+UCI version is just the same.
+
+******************************************************************************
+
+The king-pawn-king endgame table is generated in a similar way. Since this
+file will not change and it is already in the sources directory, there is no
+need to build it.
+
+Windows: run "make_pfpk.bat" (MingW required, or use the supplied
+binary pfpk_win.exe).
+Linux: run the tool in "tools/kpk" (just type "make").
+
+That will output "kpk.dat" which is the generated binary table file.
+kpk_table.c is the include file, which is what you need. Possible endianess
+issues are taken care of in that the binary values are saved byte-wise.
+
+******************************************************************************
+
+When you've got all the included files together, put bookdata.c into the
+source/application-uci directory (kpk_table.c is already there).
+
+Windows: run make_ct800_win.bat
+Linux:   run make_ct800_pc_x64.sh or make_ct800_pc_x32.sh , depending on
+         whether you are using 64 bit or 32 bit Linux.
+Android: run make_ct800_android.bat under Windows or
+         run make_ct800_android.sh under Linux.
+Raspi:   run make_ct800_raspi.sh on the Raspberry or
+         run make_ct800_raspi_x32.bat under Windows.
+macOS:   run make_ct800_mac_x64.sh
+
+The binaries will be generated under source/application-uci/output .
+
+******************************************************************************

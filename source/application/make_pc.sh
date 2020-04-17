@@ -1,0 +1,2 @@
+#!/bin/bash
+gcc -DPC_VERSION -Wl,-Map,ct800.map -Wall -Wmaybe-uninitialized -Wstrict-aliasing -Wlogical-op -Wno-cast-align -Werror -O02 -std=c99 -g -m32 -fno-inline -faggressive-loop-optimizations -fno-unsafe-loop-optimizations -fno-strict-aliasing -fno-strict-overflow -o ct800 play.c move_gen.c book.c hashtables.c eval.c search.c timekeeping.c util.c hmi.c menu.c posedit.c hardware_pc.c kpk.c

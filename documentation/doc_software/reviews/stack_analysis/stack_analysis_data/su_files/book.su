@@ -1,0 +1,3 @@
+book.c:173:12:Book_Convert_Movelist	24	static
+book.c:81:12:Book_Get_Position_Line_NormBoard	48	static
+book.c:333:18:Book_Is_Line	272	static

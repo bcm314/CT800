@@ -1,0 +1,28 @@
+Note: The PC version referenced here is not the UCI version, but the
+development PC version under source/application. The point is to
+emulate the behaviour of the actual CT800 hardware as closely as possible,
+including move input and menu system. If you are just interested in the
+UCI version, you can ignore this readme file.
+
+The PC version does not use the 4x4 keypad, but the PC's keyboard. The
+key mapping is as follows:
+
+EN: y (because enter doesn't work with getch).
+CL: n
+a-h, 1-8 are used for coordinates.
+menu access: m
+position viewer: p (also after the game)
+undo or < key: u or -
+redo or > key: r or +
+go-key: x (not working during computer's turn)
+quit program: q (at any time - pay attention when queening!)
+light key: not supported
+
+So, to start a game with e2-e4, you type: "e2e4y". Pieces are not denoted
+when entering a move. So if you instead want to start with Ng1-f3, you
+type: "g1f3y".
+
+Promotion is done via 1-4 or a-d:
+1 = queen, 2 = rook, 3 = bishop, 4 = knight. Example: "b7b82y" pushes a
+white pawn from b7 to b8, promoting on b8 and yielding a rook. If you don't
+specify the promotion piece ("b7b8y"), a queen is selected.

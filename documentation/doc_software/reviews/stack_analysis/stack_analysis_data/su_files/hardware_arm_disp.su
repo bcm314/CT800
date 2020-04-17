@@ -1,0 +1,13 @@
+hardware_arm_disp.c:103:13:Hw_Disp_Write_Byte	8	static
+hardware_arm_disp.c:129:13:Hw_Disp_Write_Cmd	16	static
+hardware_arm_disp.c:169:13:Hw_Disp_Define_Char	16	static
+hardware_arm_disp.c:183:6:Hw_Disp_Set_Charset	8	static
+hardware_arm_disp.c:200:6:Hw_Disp_Switch	0	static
+hardware_arm_disp.c:216:6:Hw_Disp_Init	8	static
+hardware_arm_disp.c:250:6:Hw_Disp_Set_Cursor	8	static
+hardware_arm_disp.c:270:6:Hw_Disp_Output	24	static
+hardware_arm_disp.c:300:6:Hw_Disp_Viewport_Conv	8	static
+hardware_arm_disp.c:314:6:Hw_Disp_Show_All	96	static
+hardware_arm_disp.c:333:6:Hw_Disp_Update	16	static
+hardware_arm_disp.c:354:6:Hw_Disp_Set_Contrast	0	static
+hardware_arm_disp.c:369:6:Hw_Disp_Set_Conf_Contrast	0	static

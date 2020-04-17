@@ -1,0 +1,184 @@
+This document lists the features of the CT800 UCI version.
+
+Pondering is NOT supported. If the GUI nevertheless tries to tell the
+engine to ponder, the engine will tolerate the command, but it will not
+acually ponder. Since this engine does not announce ponder ability to
+the GUI, the GUI should not offer this option.
+
+Pondering is not mandatory under UCI, and there are no plans to add this
+feature. The UCI version is meant to represent the dedicated CT800 unit
+which has no operating system, no multitasking and therefore no pondering.
+
+
+The following UCI standard options are implemented. GUIs usually do not show
+them under the engine specific dialogue, but somewhere in the general GUI
+options:
+
+- OwnBook: switch the internal opening book on/off. Default: on.
+
+
+- Hash: hash table size in MB from 1 to 1024. Default: 8 MB. The size does not
+  have to be a power of 2; the engine will automatically select the highest
+  suitable value that does not exceed the configured size.
+
+  If there is not enough free RAM available, the allocation will be retried
+  with half the size of the previous try until the allocation succeeds. If it
+  fails even with the minimum size of 1 MB, the engine will throw an error
+  message and exit.
+
+  The recommended value is at least 200 MB - more is better, of course.
+  However, you should keep enough memory free for other system operations, at
+  least 30% of the total RAM.
+
+
+- UCI_Elo: sets the playing strength in Elo from 1000 to a variable upper limit
+  that depends on the speed of the hardware. This is implemented by mapping the
+  targeted Elo to a limit in nodes per second and a noise level.
+  When this option is active, the options "CPU Speed [%]", "CPU Speed [kNPS]"
+  and "Eval Noise [%]" (see below) are overridden.
+
+- UCI_LimitStrength: switches the strength limit on/off. Default: off.
+
+
+- UCI_EngineAbout: this is an info-only string. If the GUI displays it as
+  configurable engine parameter, this will be a GUI bug.
+
+
+- debug on/off: show debug output. Default is off.
+
+
+The following engine specific options are implemented:
+
+- Keep Hash Tables: if the next position continues a game, the hash tables are
+  kept for reusing previous calculations. Default: on.
+
+
+- Clear Hash: this button allows to reset the hash tables and global PV. This
+  takes effect every time the button is used.
+
+
+- Book Moves: tells what opening book moves are possible in the current
+  position (if any). The current position is either the starting position or
+  the last one transferred by the GUI. You can force most GUIs to transfer the
+  current board position to the engine by shortly switching to "analysis" mode
+  and then back to "enter moves".
+
+
+- Contempt Value [cps]: the contempt in centipawns, from -300 to 300
+  centipawns. Default: 30 centipawns. Positive values take risk in avoiding
+  draws, negative values prefer draws. The draws in question are those by
+  threefold repetition.
+
+
+- Contempt End [moves]: from that move on, the contempt is not active. From
+  0 to 400 moves, default: 34 moves. Only for games from the starting position
+  or that have a move counter in the FEN string of the position.
+
+
+- Move Overhead [ms]: in every move, this amount of milliseconds is reserved
+  for general overhead like the GUI delay, from 0 to 1000 ms. Default: 100 ms.
+  Reducing this parameter too much can lead to time forfeits.
+
+
+  CPU Throttling:
+
+  If you want to reduce the calculation speed and thereby the engine's
+  strength, you can choose a certain CPU percentage or a node rate limit, see
+  the following two UCI options. Both will work at the same time with the
+  minimum of the two limits becoming active.
+
+  The pre-search with 2 plies depth plus quiescence is performed without
+  throttling so that there is always a somewhat reasonable reply move.
+
+  The implementation will also reduce energy consumption during throttling;
+  this will especially benefit batteries on mobile devices. For the same
+  resulting node rate, using the [kNPS] way of throttling is a bit more energy
+  efficient than via [%].
+
+  Due to the way the throttling is implemented, it can become inaccurate with
+  short thinking times of less than one second.
+
+  Configuring the engine strength in Elo (see above) will override the
+  settings from "CPU Speed [%]" and "CPU Speed [kNPS]" for as long as the Elo
+  limit is active.
+
+- CPU Speed [%]: allows to reduce the CPU speed from 100% down to 1%.
+  Default: 100% (full CPU speed).
+
+- CPU Speed [kNPS]: allows to limit the engine's node rate from 30000 kilo
+  nodes per second down to 1 kNPS. Usual PCs achieve around 2000 kNPS; the
+  high maximum accounts for possible faster hardware in the future. The
+  default is maximum speed.
+
+  Use this option if you want to achieve the same throttled playing strength
+  across different devices. The engine will come close to the "real" CT800 if
+  you select 30 kNPS and set the hashtables to the minimum (1 MB).
+
+
+- Eval Noise [%]: replaces the evaluation function by this amount of random
+  noise. The default of 0 % means no noise (full strength). 100 % means pure
+  noise and reduces the engine to a random mover. At values >= 30%, the search
+  extensions for checks and passed pawns will be disabled.
+
+  High values for N can considerably slow down the search because the search
+  tree cutoffs may not work as well anymore.
+
+  Configuring the engine strength in Elo (see above) will override the
+  settings of the eval noise.
+
+
+- Show Current Moves: per default, the current root move under calculation is
+  updated once per second. This means also that moves are skipped in the
+  display because they are so fast that it can be unreadable. Change this
+  option to "continously" to have the update as soon as a new root move is
+  calculated. The output starts after 1 second in both cases.
+
+
+- Under UCI, the time controls are implemented completely: fixed time per
+  move, fixed time per game and tournament modes. Infinite search time for
+  analysis works, too. You can also limit the search depth in plies, which
+  refers to the brute force base (selective extensions are still possible),
+  and you can limit the amount of nodes searched.
+
+  Besides, you can limit the movelist with searchmoves, and the mate-in mode
+  is also supported.
+
+
+The non-standard UCI command "perft x" is also supported, which tests the
+correctness and performance of the move generator. "x" is the desired depth in
+plies. It is automatically limited to 20, which is more than enough for any
+position.
+"perft" works on the position that was last transferred with the "position"
+command, or on the initial position after "ucinewgame" or after startup.
+The output contains depth in plies, number of nodes, time in milliceconds and
+node rate in nodes per second.
+Only the UCI commands "stop", "quit" and "isready" are processed also during
+"perft" calculation.
+
+
+Engine restart
+
+Some GUIs (like Arena in engine tournaments) offer the option to restart the
+engine before every game. For the CT800 engine, this is not necessary.
+
+
+Tablebase hits
+
+In the UCI output, the engine reports table base hits although it does not
+actually support endgame table bases. Instead, the engine counts dedicated
+endgame evaluation cases as table base hits - even if they are not implemented
+as tables, technically. However, the point is the same, i.e. the engine has
+definite endgame position information.
+
+The KP:K endgame is using a bitbase, but since that only stores win/draw, some
+additional heuristics are used: a won position is better if the pawn is more
+advanced. This still counts as table base hit.
+
+
+Legality check
+
+The engine checks if the position transmitted by the GUI is legal. There must
+not be too many pieces, too many promoted pieces, the number of kings must be
+two, and the side to move must not be giving check. A possible movelist is
+also checked for legality. The engine will reject illegal positions and will
+refuse to move.

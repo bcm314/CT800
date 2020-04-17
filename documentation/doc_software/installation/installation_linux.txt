@@ -1,0 +1,26 @@
+******************************************************************************
+This file contains the instructions how to install the executable under
+Linux. Note that there is no GUI included because the engine is intended to
+be used with chess GUIs via the UCI protocol.
+******************************************************************************
+
+- Since the download ZIP does not contain Linux binaries, you first have to
+  build the binary. Follow the Linux build instructions in the ZIP file under
+  documentation/doc_software/buildprocess/buildprocess_uci.txt .
+- Create a "CT800" directory in a suitable place in your system.
+- Copy the generated executable to that "CT800" directory.
+- Copy also the logo PNG from the binaries/Logo-Images in the ZIP download
+  file to that directory.
+- Follow the instructions of your chess GUI how to register the engine with
+  your chess GUI.
+- The CT800 engine supports the UCI protocol only. You should select "use
+  engine book" because the opening book is tuned to the engine's style.
+
+Note: The opening book is contained in the executable file, as well as the
+      endgame bitbase for KPK, so there are no additional paths to configure.
+
+Note: The engine uses 8 MB as default size for the hash tables. For better
+      performance, 256 MB are recommended, which you can control through your
+      GUI.
+
+******************************************************************************

@@ -1,0 +1,28 @@
+I'm using a breakout port for the JTAG connection, a SUBD-15 with a
+protective screw-on port cover. The female end is at the housing.
+
+This way, I can reprogram the CT800 without opening the housing. The port
+cover is important since otherwise, ESD sensitive CPU pins would be
+exposed to accidental touch.
+
+The total cable length of the 20 pin ribbon cable must not exceed
+20cm, or else the JTAG connection may not work properly. Shorter is
+better, of course.
+
+
+JTAG     SUBD-15
+1          1
+2          2
+3          3
+5          4
+7          5
+9          6
+11         7
+13         8
+4/6        9
+8/10      10
+12/14     11
+15        12
+17        13
+16/18/20  14
+19        15

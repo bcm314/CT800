@@ -1,0 +1,12 @@
+hashtables.c:88:17:Hash_Get_Random32_MT	24	static
+hashtables.c:250:25:Hash_Is_Checkmate	1112	static
+hashtables.c:125:6:Hash_Clear_Tables	8	static
+hashtables.c:132:6:Hash_Cut_Tables	8	static
+hashtables.c:168:6:Hash_Init	24	static
+hashtables.c:183:6:Hash_Init_Stack	48	static
+hashtables.c:221:5:Hash_Repetitions	16	static
+hashtables.c:304:5:Hash_Check_For_Draw	24	static
+hashtables.c:346:10:Hash_Get_Position_Value	64	static
+hashtables.c:431:5:Hash_Check_TT_PV	40	static
+hashtables.c:494:5:Hash_Check_TT	40	static
+hashtables.c:575:6:Hash_Update_TT	32	static

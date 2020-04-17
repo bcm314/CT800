@@ -1,0 +1,24 @@
+1 VERSIONINFO
+FILEVERSION     1,40,0,0
+PRODUCTVERSION  1,40,0,0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "080904E4"
+    BEGIN
+      VALUE "CompanyName", "Rasmus Althoff"
+      VALUE "FileDescription", "CT800 chess engine"
+      VALUE "FileVersion", "1.40"
+      VALUE "InternalName", "ct800_v1.40_x64.exe"
+      VALUE "LegalCopyright", "Rasmus Althoff, GPLv3+"
+      VALUE "OriginalFilename", "ct800_v1.40_x64.exe"
+      VALUE "ProductName", "CT800 64 bit"
+      VALUE "ProductVersion", "1.40"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x809, 1252
+  END
+END
+2 ICON "ct800_win_64.ico"

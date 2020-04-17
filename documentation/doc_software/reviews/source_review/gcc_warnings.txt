@@ -1,0 +1,12 @@
+There are no GCC v7.3 warnings when compiling with:
+-Wall -Wextra -Wlogical-op -Wno-cast-align -Werror
+for the following components:
+
+- CT800 application (PC build)
+- CT800 firmware (embedded ARM build)
+- book tool
+- CRC tool
+- KPK bitbase generator.
+
+
+Evaluation: PASSED.

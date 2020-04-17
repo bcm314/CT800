@@ -1,0 +1,27 @@
+******************************************************************************
+This file contains the instructions how to install the executable under
+Windows. Note that there is no GUI included because the engine is intended to
+be used with chess GUIs like Arena or Winboard via the UCI protocol.
+******************************************************************************
+
+- Use the Windows explorer and go to the program directory of your chess GUI,
+  e.g.
+  C:\Program Files (x86)\Arena\Engines\
+  or
+  C:\Program Files (x86)\WinBoard-4.8.0\ .
+- Create the directory "CT800".
+- Copy the Windows executables and the logo PNGs from the binaries\Windows
+  directory in the ZIP download file to that "CT800" directory.
+- Follow the instructions of your chess GUI how to register the engine with
+  your chess GUI.
+- The CT800 engine supports the UCI protocol only. You should select "use
+  engine book" because the opening book is tuned to the engine's style.
+
+Note: The opening book is contained in the EXE file, as well as the endgame
+      bitbase for KPK, so there are no additional paths to configure.
+
+Note: The engine uses 8 MB as default size for the hash tables. For better
+      performance, 256 MB are recommended, which you can control through your
+      GUI.
+
+******************************************************************************

@@ -1,0 +1,15 @@
+arm_driver.c:219:17:Drv_RCC_PLL_Set.constprop	20	static
+arm_driver.c:29:6:Drv_Lock_BKP	0	static
+arm_driver.c:37:6:Drv_Unlock_BKP	0	static
+arm_driver.c:46:10:Drv_Periph_Enable	16	static
+arm_driver.c:126:6:Drv_Periph_Disable	8	static
+arm_driver.c:147:6:Drv_Periph_Shutdown	4	static
+arm_driver.c:159:6:Drv_PWR_STBY_Mode	0	static
+arm_driver.c:170:6:Drv_IWDG_Setup_Watchdog	8	static
+arm_driver.c:195:6:Drv_IWDG_Trigger_Watchdog	0	static
+arm_driver.c:201:6:Drv_IWDG_Disable_Watchdog	0	static
+arm_driver.c:414:10:Drv_Set_Sys_Speed_Type	24	static
+arm_driver.c:471:6:Drv_DWT_Setup	4	static
+arm_driver.c:479:6:Drv_DWT_Stop	0	static
+arm_driver.c:488:6:Drv_Stop_Systick	0	static
+arm_driver.c:498:6:Drv_Start_Systick	8	static

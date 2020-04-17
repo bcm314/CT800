@@ -1,0 +1,27 @@
+﻿CppCheck v1.90 has been used for static source code analysis with errors and
+warnings only.
+
+CppCheck issues the following warnings for the CT800 application V1.40:
+
+hmi.c , line 206:
+    Array 'line1[14]' accessed at index 17, which is out of bounds.
+    explanation: false positive, this line is not executed for short strings.
+
+search.c , line 683:
+    Possible null pointer dereference: blocked_movelist
+    explanation: false positive, the list is guarded by blocked_moves as list
+                 length. Where blocked_movelist is NULL, blocked_moves is 0.
+
+search.c , line 1978:
+    The address of local variable 'empty_p' might be accessed at non-zero index.
+    explanation: false positive, the dereference is not indexed.
+
+CppCheck does not issue unexplained warnings for the source code of:
+
+- the CT800 UCI version (one false positive for search.c, see above)
+- the book tool
+- the CRC tool
+- the KPK bitbase generator.
+
+
+Evaluation: PASSED.

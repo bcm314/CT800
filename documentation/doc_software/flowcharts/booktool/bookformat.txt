@@ -1,0 +1,66 @@
+The opening book text file itself is an ASCII text file that you can edit
+with any text editor. Besides plain ASCII, also UTF-8 with and without BOM
+(byte order mark) are supported.
+
+Whitespaces may be space characters or tabs.
+
+Allowed are:
+- leading whitespaces in a line.
+- more than one whitespace between two moves.
+- lines without moves (empty or whitespace only or comments).
+
+It is line based, and each line goes like this:
+
+e2e4 e7e5 g1f3 b8c6 f1b5 (Spanish Opening)
+
+You always give the origin and destination square of a move. Capturing moves
+do not require any special markup, not even for en passant. Castling is done
+as a pure king move. A white kingside castling thus is "e1g1". The rook
+relocation is implied automatically.
+
+En passant caputures work although the en passant square is not being tracked
+in the position CRC itself. Within the CT800's opening book logics, the
+suggested opening book moves are matched against the list of legal moves.
+So if en passant is in the book for a certain position CRC without being
+possible on the board, this move will not be selected.
+
+Pawn promotions to queens work because the queen promotion is assumed
+implicitely. Also for a promotion pawn move, is it just from-to notation.
+Attaching the promotion piece to the move is not allowed. E.g. a black pawn
+on c2 that captures a white piece on b1 and is promoted to a queen is noted
+as "c2b1". Writing it as "c2b1q" will yield a syntax error.
+
+Underpromotions are not possible.
+
+You can mark a move with a following '?' so that the program passively knows
+how to continue if the opponent plays that move, but it will never play that
+move by itself.
+
+Another marker with the same consequence is 'x' instead of '?', which is
+used to mark moves that actually are playable, but avoided because the line
+results in positions that don't suit the software. The 'x' marker might be
+used for some kind of "wide" opening book in the future, though that is not
+planned to be implemented as of now.
+
+E.g. if you don't want the program to play King's Gambit, but tell it how to
+react in case the opponent plays it:
+
+e2e4 e7e5 f2f4? ...
+
+Comments at the line end must start with '('. The rest of the line will be
+ignored, so the closing ')' bracket is just cosmetics. If a line contains
+only a comment, you can use '#' as first character.
+
+The opening book compiler transforms the line based format into a position
+based one. This means that once you reach a position that already has been
+treated at the end of another variation, the same continuation applies.
+
+Example:
+
+d2d4 g7g6 e2e4 f8g7 ...
+e2e4 g7g6 d2d4
+
+In the second line, you don't need to continue because the position that is
+reached after the e2e4 in the first line is the same as after d2d4 in the
+second line. So if the variation of the second line happens, the following
+move Bf8-g7 will apply automatically also in the second line.

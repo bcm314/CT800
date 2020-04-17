@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Project version="2G - 1.7.8" name="CT800">
+  <Target name="CT800" isCurrent="1">
+    <Device manufacturerId="9" manufacturerName="ST" chipId="342" chipName="STM32F405RG" boardId="" boardName=""/>
+    <BuildOption>
+      <Compile>
+        <Option name="OptimizationLevel" value="2"/>
+        <Option name="UseFPU" value="0"/>
+        <Option name="UserEditCompiler" value="-DSTM32F405; -mslow-flash-data; -fno-strict-aliasing; -fno-strict-overflow;"/>
+        <Option name="SupportCPlusplus" value="0"/>
+        <Option name="FPU" value="0"/>
+        <Option name="CompileBeforeDebug" value="0"/>
+        <Includepaths>
+          <Includepath path="."/>
+        </Includepaths>
+        <DefinedSymbols>
+          <Define name="STM32F405RG"/>
+          <Define name="STM32F4XX"/>
+          <Define name="__ASSEMBLY__"/>
+        </DefinedSymbols>
+      </Compile>
+      <Link useDefault="0">
+        <Option name="DiscardUnusedSection" value="0"/>
+        <Option name="UserEditLinkder" value=""/>
+        <Option name="UseMemoryLayout" value="0"/>
+        <Option name="nostartfiles" value="1"/>
+        <Option name="LTO" value="0"/>
+        <Option name="IsNewStartupCode" value="1"/>
+        <Option name="Library" value="Not use C Library"/>
+        <Option name="UserEditLinker" value="--entry=main; -fuse-linker-plugin; "/>
+        <LinkedLibraries/>
+        <MemoryAreas debugInFlashNotRAM="1">
+          <Memory name="IROM1" type="ReadOnly" size="0x00100000" startValue="0x08000000"/>
+          <Memory name="IRAM1" type="ReadWrite" size="0x00020000" startValue="0x20000000"/>
+          <Memory name="IROM2" type="ReadOnly" size="" startValue=""/>
+          <Memory name="IRAM2" type="ReadWrite" size="0x00010000" startValue="0x10000000"/>
+        </MemoryAreas>
+        <LocateLinkFile path="./arm-gcc-link.ld" type="0"/>
+      </Link>
+      <Output>
+        <Option name="OutputFileType" value="0"/>
+        <Option name="Path" value="./"/>
+        <Option name="Name" value="ct800fw"/>
+        <Option name="HEX" value="0"/>
+        <Option name="BIN" value="1"/>
+      </Output>
+      <User>
+        <UserRun name="Run#1" type="Before" checked="0" value=""/>
+        <UserRun name="Run#1" type="After" checked="1" value="${project.path}/tool_bin/crctool_win.exe ${project.path}/ct800/debug/bin/ct800fw.bin 0x08000000"/>
+        <UserRun name="Run#2" type="After" checked="0" value=""/>
+      </User>
+    </BuildOption>
+    <DebugOption>
+      <Option name="org.coocox.codebugger.gdbjtag.core.adapter" value="ColinkEx"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.debugMode" value="JTAG"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.clockDiv" value="300K"/>
+      <Option name="org.coocox.codebugger.gdbjtag.corerunToMain" value="0"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.jlinkgdbserver" value=""/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.userDefineGDBScript" value=""/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.targetEndianess" value="0"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.jlinkResetMode" value="Type 0: Normal"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.resetMode" value="HW RESET"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.ifSemihost" value="0"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.ifCacheRom" value="1"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.ipAddress" value="127.0.0.1"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.portNumber" value="2009"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.autoDownload" value="1"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.verify" value="1"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.downloadFuction" value="Erase Effected"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.defaultAlgorithm" value="./stm32f4xx_1024.elf"/>
+    </DebugOption>
+    <ExcludeFile/>
+  </Target>
+  <Components path="./"/>
+  <Files>
+    <File name="Application/kpk.h" path="application/kpk.h" type="1"/>
+    <File name="Application/play.c" path="application/play.c" type="1"/>
+    <File name="Application/util.c" path="application/util.c" type="1"/>
+    <File name="Application/book.c" path="application/book.c" type="1"/>
+    <File name="Application/eval.c" path="application/eval.c" type="1"/>
+    <File name="Application/arm_driver.h" path="application/arm_driver.h" type="1"/>
+    <File name="Application/hardware_arm_disp.c" path="application/hardware_arm_disp.c" type="1"/>
+    <File name="Application/hardware_arm_keybd.c" path="application/hardware_arm_keybd.c" type="1"/>
+    <File name="Application/boot_stm32f405.c" path="application/boot_stm32f405.c" type="1"/>
+    <File name="Application/posedit.h" path="application/posedit.h" type="1"/>
+    <File name="Application/ctdefs.h" path="application/ctdefs.h" type="1"/>
+    <File name="Application/timekeeping.h" path="application/timekeeping.h" type="1"/>
+    <File name="Application/hmi.c" path="application/hmi.c" type="1"/>
+    <File name="Application/book.h" path="application/book.h" type="1"/>
+    <File name="Application/move_gen.c" path="application/move_gen.c" type="1"/>
+    <File name="Application/search.h" path="application/search.h" type="1"/>
+    <File name="Application/menu.h" path="application/menu.h" type="1"/>
+    <File name="Application/hashtables.c" path="application/hashtables.c" type="1"/>
+    <File name="Application/timekeeping.c" path="application/timekeeping.c" type="1"/>
+    <File name="Application/util.h" path="application/util.h" type="1"/>
+    <File name="Application/eval.h" path="application/eval.h" type="1"/>
+    <File name="Application/hashtables.h" path="application/hashtables.h" type="1"/>
+    <File name="Application/kpk.c" path="application/kpk.c" type="1"/>
+    <File name="Application/menu.c" path="application/menu.c" type="1"/>
+    <File name="Application/hardware_arm_signal.c" path="application/hardware_arm_signal.c" type="1"/>
+    <File name="Application/move_gen.h" path="application/move_gen.h" type="1"/>
+    <File name="Application" path="" type="2"/>
+    <File name="Application/hardware.h" path="application/hardware.h" type="1"/>
+    <File name="Application/arm_driver.c" path="application/arm_driver.c" type="1"/>
+    <File name="Application/search.c" path="application/search.c" type="1"/>
+    <File name="Application/posedit.c" path="application/posedit.c" type="1"/>
+    <File name="Application/confdefs.h" path="application/confdefs.h" type="1"/>
+    <File name="Application/hardware_arm.c" path="application/hardware_arm.c" type="1"/>
+    <File name="Application/hmi.h" path="application/hmi.h" type="1"/>
+  </Files>
+</Project>

@@ -1,0 +1,8 @@
+posedit.c:43:12:Pos_Square_To_Viewport	0	static
+posedit.c:315:12:Pos_Count_Promoted_Pieces	12	static
+posedit.c:529:12:Pos_Readline	48	static
+posedit.c:72:13:Pos_Get_Board	32	static
+posedit.c:380:12:Pos_Count_Pawns.part.0	0	static
+posedit.c:455:12:Pos_EPSQ_Valid	8	static
+posedit.c:416:13:Pos_Add_Line	16	static
+posedit.c:677:30:Pos_Editor	360	static
